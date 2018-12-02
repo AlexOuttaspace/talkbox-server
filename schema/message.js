@@ -1,0 +1,8 @@
+export const message = `
+  type Message {
+    id: Int!
+    text: String!
+    user: User!
+    channel: Channel!
+  }
+`

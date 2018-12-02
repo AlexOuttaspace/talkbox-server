@@ -1,7 +1,10 @@
 import Sequelize from 'sequelize'
 
 const sequelize = new Sequelize('talkbox', 'postgres', '', {
-  dialect: 'postgres'
+  dialect: 'postgres',
+  define: {
+    underscored: true
+  }
 })
 
 export const models = {
