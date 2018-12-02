@@ -1,21 +1,22 @@
-require('dotenv').config()
+require('dotenv').config //eslint-disable-line
 
-const express = require('express'),
-    cors = require('cors'),
-    bodyParser = require('body-parser'),
+import express from 'express'
+import { ApolloServer } from 'apollo-server-express'
+import { typeDefs } from './typeDefs'
+import { resolvers } from './resolvers'
 
-    app = express(),
+const app = express()
 
-    PORT = process.env.PORT || 1994
+const PORT = process.env.PORT || 3020
 
-app.use(cors())
-
-app.use(bodyParser.json())
-
-app.get('/', (req, res) => {
-    res.send('hi there')
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
 })
+    
+server.applyMiddleware({ app })
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`)
-})
+app.listen(
+  PORT,
+  console.log(`Server ready at  http://localhost:${PORT}${server.graphqlPath}`)
+)
