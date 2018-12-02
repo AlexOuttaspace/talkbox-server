@@ -1,48 +1,22 @@
-require('dotenv').config()
+require('dotenv').config //eslint-disable-line
 
-const express = require('express')
-const { Server } = require('http')
-const { SubscriptionServer } = require('subscriptions-transport-ws')
-const {
-  execute,
-  subscribe,
-  GraphQLSchema,
-  GraphQLObjectType,
-  GraphQLString
-} = require('graphql')
-const GraphHTTP = require('express-graphql')
+import express from 'express'
+import { ApolloServer } from 'apollo-server-express'
+import { typeDefs } from './typeDefs'
+import { resolvers } from './resolvers'
+
 const app = express()
 
 const PORT = process.env.PORT || 3020
 
-const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    fields: {
-      message: {
-        type: GraphQLString,
-        resolve() {
-          return 'Hello World!'
-        }
-      }
-    }
-  })
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
 })
     
-app.use('/api/ql', GraphHTTP({
-  schema,
-  graphiql: true
-}))
+server.applyMiddleware({ app })
 
-const server = Server(app)
-
-SubscriptionServer.create({
-  schema,
-  execute,
-  subscribe
-}, {
-  server,
-  path: '/api/ws'
-})
-
-server.listen(PORT, console.log(`Server started on port ${PORT}`))
+app.listen(
+  PORT,
+  console.log(`Server ready at  http://localhost:${PORT}${server.graphqlPath}`)
+)
