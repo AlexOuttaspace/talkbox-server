@@ -12,7 +12,13 @@ const PORT = process.env.PORT || 3020
 
 const server = new ApolloServer({
   typeDefs: gql(schema),
-  resolvers
+  resolvers,
+  context: {
+    models,
+    user: {
+      id: 1
+    }
+  }
 })
     
 server.applyMiddleware({ app })

@@ -9,7 +9,7 @@ export const user = `
   
   type Query {
     getUser(id: Int!): User!
-    allUsers(id: Int!): [User!]!
+    allUsers: [User!]!
   }
 
   type Mutation {

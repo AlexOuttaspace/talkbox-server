@@ -6,4 +6,8 @@ export const channel = `
     public: Boolean!
     users: [User!]!
   }
+
+  type Mutation {
+    createChannel(name: String!, teamId: Int!, public: Boolean=false): Boolean!
+  }
 `
