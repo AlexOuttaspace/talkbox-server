@@ -5,8 +5,11 @@ import { ApolloServer, gql } from 'apollo-server-express'
 import { schema } from './schema/'
 import { resolvers } from './resolvers/'
 import { models } from './models'
+import cors from 'cors'
 
 const app = express()
+
+app.use(cors('*'))
 
 const PORT = process.env.PORT || 3020
 
