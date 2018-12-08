@@ -13,6 +13,6 @@ export const user = `
   }
 
   type Mutation {
-    createUser(username: String!, email: String!, password: String!): User!
+    register(username: String!, email: String!, password: String!): User!
   }
 `
