@@ -4,10 +4,12 @@ import { channel } from './channel'
 import { message } from './message'
 import { team } from './team'
 import { user } from './user'
+import { error } from './error'
 
 export const schema = mergeTypes([
   channel,
   message,
   team,
-  user
+  user,
+  error
 ], { all: true })

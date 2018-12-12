@@ -1,4 +1,9 @@
-import bcrypt from 'bcrypt'
+const formatErrors = (e, models) => {
+  if (e instanceof models.sequelize.ValidationError) {
+    return e.errors.map(({ message, path }) => ({ message, path }))
+  }
+  return [ { path: 'name', message: 'something went wrong' } ]
+}
 
 export const user = {
   Query: {
@@ -7,19 +12,19 @@ export const user = {
   },
 
   Mutation: {
-    register: async (parent, { password, ...otherArgs }, { models }) => {
+    register: async (parent, args, { models }) => {
       try {
-        const hashedPassword = await bcrypt.hash(password, 12)
+        const registeredUser = await models.User.create(args)
 
-        const registeredUser = await models.User.create({
-          password: hashedPassword,
-          ...otherArgs
-        })
-
-        return registeredUser
-      } catch (err) {
-        console.log(err)
-        return {}
+        return {
+          ok: true,
+          user: registeredUser
+        }
+      } catch (error) {
+        return {
+          ok: false,
+          errors: formatErrors(error, models)
+        }
       }
     }
   }
