@@ -1,5 +1,3 @@
-require('dotenv').config //eslint-disable-line
-
 import express from 'express'
 import { ApolloServer, gql } from 'apollo-server-express'
 import { schema } from './schema/'

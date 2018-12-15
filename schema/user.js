@@ -6,7 +6,6 @@ export const user = `
     teams: [Team!]!
   }
 
-  
   type Query {
     getUser(id: Int!): User!
     allUsers: [User!]!
