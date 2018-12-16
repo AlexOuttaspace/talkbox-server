@@ -1,7 +1,15 @@
-const formatErrors = (e, models) => {
-  if (e instanceof models.sequelize.ValidationError) {
+import bcrypt from 'bcrypt'
+import { tryLogin } from '../auth'
+
+const formatErrors = (e) => {
+  if (e.name === 'SequelizeUniqueConstraintError') {
+    return [ { path: e.parent.constraint, message: 'field is not unique' } ]
+  }
+
+  if (e.name === 'SequelizeValidationError') {
     return e.errors.map(({ message, path }) => ({ message, path }))
   }
+
   return [ { path: 'name', message: 'something went wrong' } ]
 }
 
@@ -23,9 +31,21 @@ export const user = {
       } catch (error) {
         return {
           ok: false,
-          errors: formatErrors(error, models)
+          errors: formatErrors(error)
         }
       }
+    },
+
+    login: async (parent, { email, password }, { models, SECRET, SECRET2 }) => {
+      try {
+        return tryLogin(email, password, models, SECRET, SECRET2)
+      } catch (error) {
+        return {
+          ok: false,
+          errors: formatErrors(error)
+        }
+      }
+
     }
   }
 }

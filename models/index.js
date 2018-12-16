@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize'
 
-const sequelize = new Sequelize('talkbox', 'postgres', '', {
+const sequelize = new Sequelize('talkbox_2', 'postgres', '', {
   dialect: 'postgres',
   define: {
     underscored: true

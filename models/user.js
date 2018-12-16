@@ -41,7 +41,6 @@ export default (sequelize, DataTypes) => {
     hooks: {
       afterValidate: async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 12)
-        // eslint-disable-next-line no-param-reassign
 
         user.password = hashedPassword
       }

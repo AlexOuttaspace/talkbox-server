@@ -7,6 +7,9 @@ import cors from 'cors'
 
 const app = express()
 
+const SECRET = 'nevergonnagiveyouup'
+const SECRET2 = 'nevergonnaletyoudown'
+
 app.use(cors('*'))
 
 const PORT = process.env.PORT || 3020
@@ -15,6 +18,8 @@ const server = new ApolloServer({
   typeDefs: gql(schema),
   resolvers,
   context: {
+    SECRET,
+    SECRET2,
     models,
     user: {
       id: 1
