@@ -13,7 +13,6 @@ export const user = `
 
   type RegisterResponse {
     ok: Boolean!
-    user: User
     errors: [Error!]
   }
 
