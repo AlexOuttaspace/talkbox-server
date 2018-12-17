@@ -5,9 +5,12 @@ export const team = `
     channels: [Channel!]!
   }
 
-  
+  type CreateTeamResponse {
+    ok: Boolean!
+    errors: [Error!]
+  }
 
   type Mutation {
-    createTeam(name: String!): Boolean!
+    createTeam(name: String!): CreateTeamResponse!
   }
 `
