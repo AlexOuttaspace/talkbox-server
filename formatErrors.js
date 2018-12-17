@@ -1,6 +1,9 @@
 export const formatErrors = (e) => {
   if (e.name === 'SequelizeUniqueConstraintError') {
-    return [ { path: e.parent.constraint, message: 'field is not unique' } ]
+    const path = e.parent.constraint.split('_')[1] // this is very hacky, but what can i do
+
+
+    return [ { path, message: `this ${path} is already taken` } ]
   }
 
   if (e.name === 'SequelizeValidationError') {

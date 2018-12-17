@@ -35,7 +35,7 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
   if (!user) {
     return {
       ok: false,
-      errors: [ { path: 'email', message: 'No user with specified email found' } ]
+      errors: [ { path: 'email', message: 'invalid email' } ]
     }
   }
 
@@ -45,7 +45,7 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
   if (!passwordIsValid) {
     return {
       ok: false,
-      errors: [ { path: 'password', message: 'Wrong password, matey' } ]
+      errors: [ { path: 'password', message: 'invalid password' } ]
     }
   }
     
