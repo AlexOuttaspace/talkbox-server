@@ -84,8 +84,10 @@ export const refreshTokens = async (refreshToken, models, SECRET, SECRET2) => {
 
   const refreshSecret = user.password + SECRET2
 
+
   try {
-    jwt.verify(refreshToken, refreshSecret)
+    const asd = jwt.verify(refreshToken, refreshSecret)
+
   } catch (err) {
     return {}
   }
