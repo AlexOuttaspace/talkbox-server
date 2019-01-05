@@ -10,6 +10,10 @@ export const team = `
     errors: [Error!]
   }
 
+  type Query {
+    allTeams: [Team!]!
+  }
+
   type Mutation {
     createTeam(name: String!): CreateTeamResponse!
   }

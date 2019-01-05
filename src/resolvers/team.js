@@ -17,5 +17,10 @@ export const team = {
         }
       }
     })
+  },
+  Query: {
+    allTeams: requiresAuth.createResolver(async (parent, args, { models, user }) =>
+      await models.Team.findAll({ owner: user.id }, { raw: true })
+    )
   }
 }

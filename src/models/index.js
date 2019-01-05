@@ -2,6 +2,7 @@ import Sequelize from 'sequelize'
 
 const sequelize = new Sequelize('talkbox_2', 'postgres', '', {
   dialect: 'postgres',
+  operatorsAliases: Sequelize.Op,
   define: {
     underscored: true
   }
