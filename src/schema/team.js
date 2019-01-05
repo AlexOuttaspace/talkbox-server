@@ -1,5 +1,7 @@
 export const team = `
   type Team {
+    id: Int!
+    name: String!
     owner: User!
     members: [User!]!
     channels: [Channel!]!

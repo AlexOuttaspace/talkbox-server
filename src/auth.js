@@ -5,7 +5,8 @@ export const createTokens = (user, secret, secret2) => {
   const createToken = jwt.sign(
     {
       user: {
-        id: user.id
+        id: user.id,
+        username: user.username
       }
     },
     secret,
@@ -15,7 +16,8 @@ export const createTokens = (user, secret, secret2) => {
   const createRefreshToken = jwt.sign(
     {
       user: {
-        id: user.id
+        id: user.id,
+        username: user.username
       }
     },
     secret2,
@@ -26,11 +28,7 @@ export const createTokens = (user, secret, secret2) => {
 }
 
 export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
-
-    
   const user = await models.User.findOne({ where: { email }, raw: true })
-    
-  console.log(user)
     
   if (!user) {
     return {
