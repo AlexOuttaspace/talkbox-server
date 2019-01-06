@@ -8,10 +8,11 @@ export const team = {
         const createdTeam = await models.Team.create({ ...args, owner: user.id })
 
         // not using await here to return response faster
-        models.Channel.create({ name: 'general', public: true, teamId: createdTeam.id })
+        await models.Channel.create({ name: 'general', public: true, teamId: createdTeam.id })
 
         return {
-          ok: true
+          ok: true,
+          team: createdTeam
         }
       } catch (error) {
         console.log(error)

@@ -9,6 +9,7 @@ export const team = `
 
   type CreateTeamResponse {
     ok: Boolean!
+    team: Team!
     errors: [Error!]
   }
 
