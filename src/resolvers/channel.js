@@ -1,13 +1,24 @@
+import { formatErrors } from '../formatErrors'
+import { requiresAuth } from '../permissions'
+
 export const channel = {
   Mutation: {
-    createChannel: async (parent, args, { models }) => {
+    createChannel: requiresAuth.createResolver(async (parent, args, { models }) => {
       try {
-        await models.Channel.create(args)
-        return true
+        const createdChannel = await models.Channel.create(args)
+
+        console.log(args)
+        return {
+          ok: true,
+          channel: createdChannel
+        }
       } catch (error) {
         console.log(error)
-        return false
+        return {
+          ok: false,
+          errors: formatErrors(error)
+        }
       }
-    }
+    })
   }
 }

@@ -7,7 +7,13 @@ export const channel = `
     users: [User!]!
   }
 
+  type ChannelResponse {
+    ok: Boolean!
+    channel: Channel
+    errors: [Error!]
+  }
+
   type Mutation {
-    createChannel(name: String!, teamId: Int!, public: Boolean=false): Boolean!
+    createChannel(name: String!, teamId: Int!, public: Boolean=false): ChannelResponse
   }
 `
