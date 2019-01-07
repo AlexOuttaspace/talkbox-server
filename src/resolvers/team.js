@@ -7,12 +7,46 @@ export const team = {
       try {
         const createdTeam = await models.Team.create({ ...args, owner: user.id })
 
-        // not using await here to return response faster
         await models.Channel.create({ name: 'general', public: true, teamId: createdTeam.id })
 
         return {
           ok: true,
           team: createdTeam
+        }
+      } catch (error) {
+        console.log(error)
+        return {
+          ok: false,
+          errors: formatErrors(error)
+        }
+      }
+    }),
+
+    addTeamMember: requiresAuth.createResolver(async (parent, { email, teamId }, { models, user }) => {
+      try {
+        const teamPromise = modale.findOne({ where: { id: teamId } }, { raw: true })
+        const userToAddPromise = models.findOne({ where: { email } }, { raw: true })
+
+        conse [team, userToAdd] = Promise.all({ teamPromise, userToAddPromise })
+
+        if (team.owner !== user.id) {
+          return {
+            ok: false,
+            errors: [ { path: 'email', message: 'you must be an owner of team to invite users' } ]
+          }
+        }
+
+        if (!userToAdd) {
+          return {
+            ok: false,
+            errors: [ { path: 'email', message: 'Could not find user with this email' } ]
+          }
+        }
+
+        await models.Member.create({ userId: userToAdd.id, teamId })
+
+        return {
+          ok: true
         }
       } catch (error) {
         console.log(error)
