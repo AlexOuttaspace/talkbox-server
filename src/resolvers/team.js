@@ -72,6 +72,14 @@ export const team = {
       }, {
         raw: true
       })
+    ),
+    inviteTeams: requiresAuth.createResolver(async (parent, args, { models, user }) =>
+      await models.sequelize.query(
+        'SELECT * FROM TEAMS user_id JOIN members ON id = team_id WHERE user_id = ?', {
+          model: models.Team,
+          replacements: [ user.id ]
+        }
+      )
     )
   },
   Team: {
