@@ -24,12 +24,12 @@ export const team = {
 
     addTeamMember: requiresAuth.createResolver(async (parent, { email, teamId }, { models, user }) => {
       try {
-        const teamPromise = modale.findOne({ where: { id: teamId } }, { raw: true })
-        const userToAddPromise = models.findOne({ where: { email } }, { raw: true })
+        const foundTeamPromise = models.Team.findOne({ where: { id: teamId } }, { raw: true })
+        const userToAddPromise = models.User.findOne({ where: { email } }, { raw: true })
 
-        conse [team, userToAdd] = Promise.all({ teamPromise, userToAddPromise })
+        const [ foundTeam, userToAdd ] = await Promise.all([ foundTeamPromise, userToAddPromise ])
 
-        if (team.owner !== user.id) {
+        if (foundTeam.owner !== user.id) {
           return {
             ok: false,
             errors: [ { path: 'email', message: 'you must be an owner of team to invite users' } ]
@@ -39,9 +39,11 @@ export const team = {
         if (!userToAdd) {
           return {
             ok: false,
-            errors: [ { path: 'email', message: 'Could not find user with this email' } ]
+            errors: [ { path: 'email', message: 'could not find user with this email' } ]
           }
         }
+
+        console.log({ userId: userToAdd.id, teamId })
 
         await models.Member.create({ userId: userToAdd.id, teamId })
 
