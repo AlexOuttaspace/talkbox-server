@@ -25,12 +25,7 @@ const server = new ApolloServer({
     SECRET2,
     models,
     user: req.user
-  }),
-  subscriptions: {
-    onConnect: (connectionParams, webSocket) => {
-      console.log('asd')
-    }
-  }
+  })
 })
 
 server.applyMiddleware({ app })

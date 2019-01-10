@@ -10,11 +10,25 @@ export const message = {
     createMessage: requiresAuth.createResolver(async (parent, args, { models, user }) => {
       try {
         const createdMessage = await models.Message.create({ ...args, userId: user.id })
+        
+        const asyncFunc = async () => {
+          const foundUser = await models.User.findOne({
+            where: {
+              id: user.id
+            }
+          })
+  
+          pubsub.publish(NEW_CHANNEL_MESSAGE, {
+            newChannelMessage: {
+              ...createdMessage.dataValues,
+              user: foundUser.dataValues
+            },
+            channelId: args.channelId
+          })
+        }
 
-        pubsub.publish(NEW_CHANNEL_MESSAGE, {
-          newChannelMessage: createdMessage.dataValues,
-          channelId: args.channelId
-        })
+        asyncFunc()
+     
 
         return true
       } catch (error) {
