@@ -29,7 +29,6 @@ export const message = {
 
         asyncFunc()
      
-
         return true
       } catch (error) {
         console.log(error)
@@ -42,8 +41,9 @@ export const message = {
       models.Message.findAll({ where: { channelId } }, { raw: true }))
   },
   Message: {
-    user: ({ userId }, args, { models }) =>
-      models.User.findOne({ where: { id: userId } }, { raw: true })
+    user: ({ userId }, args, { models }) => {
+      return models.User.findOne({ where: { id: userId } }, { raw: true })
+    }
   },
   Subscription: {
     newChannelMessage: {

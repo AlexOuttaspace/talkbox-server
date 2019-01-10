@@ -20,12 +20,20 @@ const PORT = process.env.PORT || 3020
 const server = new ApolloServer({
   typeDefs: gql(schema),
   resolvers,
-  context: ({ req }) => ({
-    SECRET,
-    SECRET2,
-    models,
-    user: req.user
-  })
+  context: async ({ req, connection }) => {
+    if (connection) {
+      // check connection for metadata
+      console.log(connection.context)
+      return { ...connection.context, models }
+    }
+
+    return ({
+      SECRET,
+      SECRET2,
+      models,
+      user: req.user
+    })
+  }
 })
 
 server.applyMiddleware({ app })
@@ -41,8 +49,9 @@ models
     httpServer.listen(
       { port: PORT },
       () => {
-        console.log(`\nServer ready at  http://localhost:${PORT}${server.graphqlPath}`)
-        console.log(`Subscriptions ready at  http://localhost:${PORT}${server.subscriptionsPath}`)
+        console.log('\n')
+        console.log(`> Server ready at  http://localhost:${PORT}${server.graphqlPath}`)
+        console.log(`> Subscriptions ready at  http://localhost:${PORT}${server.subscriptionsPath}`)
       }
     )
   })
