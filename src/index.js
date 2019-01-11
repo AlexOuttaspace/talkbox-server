@@ -8,6 +8,7 @@ import { resolvers } from './resolvers/'
 import { models } from './models'
 import { SECRET, SECRET2 } from './secrets'
 import { extractUser } from './extractUser'
+import { refreshTokens } from './auth'
 
 const app = express()
 
@@ -33,6 +34,27 @@ const server = new ApolloServer({
       models,
       user: req.user
     })
+  },
+  subscriptions: {
+    onConnect: async ({ token, refreshToken }, webSocket) => {
+      if (!token || !refreshToken) {
+        throw new Error('Not authenticated')
+      }
+
+      let user = null
+
+      try {
+        const payload = jwt.verify(token, SECRET)
+
+        user = payload.user
+      } catch (error) {
+        const newTokens = await refreshTokens(refreshToken, models, SECRET, SECRET2)
+
+        user = newTokens.user
+      }
+    
+      return true
+    }
   }
 })
 
