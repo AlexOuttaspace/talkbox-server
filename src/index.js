@@ -60,7 +60,7 @@ server.installSubscriptionHandlers(httpServer)
 
 models
   .sequelize
-  .sync({})
+  .sync()
   .then(() => {
     httpServer.listen(
       { port: PORT },
