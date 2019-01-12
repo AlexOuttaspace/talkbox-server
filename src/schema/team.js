@@ -2,9 +2,9 @@ export const team = `
   type Team {
     id: Int!
     name: String!
-    owner: Int!
     members: [User!]!
     channels: [Channel!]!
+    admin: Boolean!
   }
 
   type CreateTeamResponse {

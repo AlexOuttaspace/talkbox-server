@@ -48,7 +48,19 @@ export const message = {
   Subscription: {
     newChannelMessage: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(NEW_CHANNEL_MESSAGE),
+        requiresAuth.createResolver(async (parent, { channelId }, { models, user }) => {
+
+          // check if part of the team
+          const channel = await models.Channel.findOne({ where: { id: channelId } })
+
+          const member = await models.Member.findOne({ where: { teamId: channel.teamId, userId: user.id } })
+          
+          if (!member) {
+            throw new Error('Unauthorized')
+          }
+
+          return pubsub.asyncIterator(NEW_CHANNEL_MESSAGE)
+        }),
         (payload, { channelId }) => payload.channelId === channelId
       )
     }

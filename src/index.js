@@ -23,8 +23,6 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req, connection }) => {
     if (connection) {
-      // check connection for metadata
-      console.log(connection.context)
       return { ...connection.context, models }
     }
 
@@ -36,24 +34,20 @@ const server = new ApolloServer({
     })
   },
   subscriptions: {
-    onConnect: async ({ token, refreshToken }, webSocket) => {
+    onConnect: async ({ token, refreshToken }) => {
       if (!token || !refreshToken) {
-        throw new Error('Not authenticated')
+        return {}
       }
 
-      let user = null
-
       try {
-        const payload = jwt.verify(token, SECRET)
+        const { user } = jwt.verify(token, SECRET)
 
-        user = payload.user
+        return { models, user }
       } catch (error) {
         const newTokens = await refreshTokens(refreshToken, models, SECRET, SECRET2)
 
-        user = newTokens.user
+        return { models, user: newTokens.user }
       }
-    
-      return true
     }
   }
 })
@@ -66,7 +60,7 @@ server.installSubscriptionHandlers(httpServer)
 
 models
   .sequelize
-  .sync()
+  .sync({})
   .then(() => {
     httpServer.listen(
       { port: PORT },

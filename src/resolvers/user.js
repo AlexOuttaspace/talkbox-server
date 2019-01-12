@@ -1,11 +1,24 @@
-import bcrypt from 'bcrypt'
 import { tryLogin } from '../auth'
 import { formatErrors } from '../formatErrors'
+import { requiresAuth } from '../permissions'
 
 export const user = {
+  User: {
+    teams: (parent, args, context) =>
+      context.models.sequelize.query(
+        'select * from teams as team join members as member on team.id = member.team_id where member.user_id = ?', {
+          model: context.models.Team,
+          replacements: [ context.user.id ],
+          raw: true
+        }
+      )
+  },
+
   Query: {
-    getUser: (parent, { id }, { models }) => models.User.findOne({ where: { id } }),
-    allUsers: (parent, args, { models }) => models.User.findAll()
+    allUsers: (parent, args, { models }) => models.User.findAll(),
+
+    me: requiresAuth.createResolver((parent, args, context) =>
+      context.models.User.findOne({ where: { id: context.user.id } }))
   },
 
   Mutation: {

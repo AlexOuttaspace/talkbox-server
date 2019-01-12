@@ -7,7 +7,7 @@ export const user = `
   }
 
   type Query {
-    getUser(id: Int!): User!
+    me: User!
     allUsers: [User!]!
   }
 
