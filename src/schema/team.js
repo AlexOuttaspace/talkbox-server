@@ -19,13 +19,14 @@ export const team = `
     getTeamMembers(teamId: Int!): [User!]!
   }
 
-  type VoidResponse {
+  type addTeamMemberResponse {
     ok: Boolean!
     errors: [Error!]
+    user: User
   }
 
   type Mutation {
     createTeam(name: String!): CreateTeamResponse!
-    addTeamMember(email: String!, teamId: Int!): VoidResponse
+    addTeamMember(email: String!, teamId: Int!): addTeamMemberResponse!
   }
 `

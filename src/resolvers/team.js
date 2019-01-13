@@ -67,7 +67,8 @@ export const team = {
         await models.Member.create({ userId: userToAdd.id, teamId })
 
         return {
-          ok: true
+          ok: true,
+          user: userToAdd
         }
       } catch (error) {
         console.log(error)
