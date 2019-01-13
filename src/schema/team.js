@@ -2,7 +2,7 @@ export const team = `
   type Team {
     id: Int!
     name: String!
-    members: [User!]!
+    directMessageMembers: [User!]!
     channels: [Channel!]!
     admin: Boolean!
   }
@@ -16,6 +16,7 @@ export const team = `
   type Query {
     allTeams: [Team!]!
     inviteTeams: [Team!]!
+    getTeamMembers(teamId: Int!): [User!]!
   }
 
   type VoidResponse {
