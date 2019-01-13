@@ -5,7 +5,7 @@ import { message } from './message'
 import { team } from './team'
 import { user } from './user'
 import { error } from './error'
-import { directMessages } from './direct-messages'
+import { directMessage } from './direct-message'
 
 export const schema = mergeTypes([
   channel,
@@ -13,5 +13,5 @@ export const schema = mergeTypes([
   team,
   user,
   error,
-  directMessages
+  directMessage
 ], { all: true })

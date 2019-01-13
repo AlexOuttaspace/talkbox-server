@@ -1,4 +1,4 @@
-import { requiresAuth } from '../permissions'
+import { requiresAuth, requiresTeamAccess } from '../permissions'
 import { withFilter, PubSub } from 'apollo-server-express'
 
 const pubsub = new PubSub()
@@ -38,7 +38,10 @@ export const message = {
   },
   Query: {
     messages: requiresAuth.createResolver(async (parent, { channelId }, { models }) =>
-      models.Message.findAll({ where: { channelId } }, { raw: true }))
+      models.Message.findAll(
+        { order: [ [ 'created_at', 'ASC' ] ], where: { channelId } },
+        { raw: true },
+      ))
   },
   Message: {
     user: ({ userId }, args, { models }) => {
@@ -47,22 +50,12 @@ export const message = {
   },
   Subscription: {
     newChannelMessage: {
-      subscribe: withFilter(
+      subscribe: requiresTeamAccess.createResolver(withFilter(
         (parent, { channelId }, { models, user }) => {
-
-          // // check if part of the team
-          // const channel = await models.Channel.findOne({ where: { id: channelId } })
-
-          // const member = await models.Member.findOne({ where: { teamId: channel.teamId, userId: user.id } })
-          
-          // if (!member) {
-          //   throw new Error('Unauthorized')
-          // }
-
           return pubsub.asyncIterator(NEW_CHANNEL_MESSAGE)
         },
         (payload, { channelId }) => payload.channelId === channelId
-      )
+      ))
     }
   }
 }
