@@ -1,7 +1,7 @@
 import { requiresAuth, requiresTeamAccess } from '../permissions'
-import { withFilter, PubSub } from 'apollo-server-express'
+import { withFilter } from 'apollo-server-express'
 
-const pubsub = new PubSub()
+import { pubsub } from '../pubsub'
 
 const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE'
 
@@ -11,23 +11,13 @@ export const message = {
       try {
         const createdMessage = await models.Message.create({ ...args, userId: user.id })
         
-        const asyncFunc = async () => {
-          const foundUser = await models.User.findOne({
-            where: {
-              id: user.id
-            }
-          })
-  
-          pubsub.publish(NEW_CHANNEL_MESSAGE, {
-            newChannelMessage: {
-              ...createdMessage.dataValues,
-              user: foundUser.dataValues
-            },
-            channelId: args.channelId
-          })
-        }
-
-        asyncFunc()
+        pubsub.publish(NEW_CHANNEL_MESSAGE, {
+          channelId: args.channelId,
+          newChannelMessage: {
+            ...createdMessage.dataValues,
+            user
+          }
+        })
      
         return true
       } catch (error) {

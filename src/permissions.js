@@ -32,3 +32,17 @@ export const requiresTeamAccess = createResolver(async (parent, { channelId }, {
     throw new Error('Unauthorized')
   }
 })
+
+export const requiresDirectMessageAccess = createResolver(async (parent, { teamId, userId }, { models, user }) => {
+  if (!user || !user.id) {
+    throw new Error('Not authenticated')
+  }
+
+  const members = await models.Member.findAll({
+    where: { teamId, [models.sequelize.Op.or]: [ { userId: user.id }, { userId } ] }
+  })
+
+  if (!members.length === 2) {
+    throw new Error('Something went wrong')
+  }
+})
