@@ -18,9 +18,9 @@ export const channel = {
             ]
           }
         }
+
         const createdChannel = await models.Channel.create(args)
 
-        console.log(args)
         return {
           ok: true,
           channel: createdChannel
