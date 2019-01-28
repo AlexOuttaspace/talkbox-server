@@ -1,6 +1,16 @@
 import axios from 'axios'
+import { clearDb, disconnectDb } from '../models'
 
 describe('user resolvers', () => {
+
+  beforeAll(async () => {
+    await clearDb()
+  })
+
+  afterAll(async () => {
+    await disconnectDb()
+  })
+
   test('allUsers', async () => {
     const response = await axios.post('http://localhost:3020/graphql', {
       query: `
@@ -19,50 +29,87 @@ describe('user resolvers', () => {
     expect(data).toMatchObject(
       {
         'data': {
-          'allUsers': [
-            {
-              'id': 1,
-              'username': 'alex',
-              'email': 'alex@asd.com'
-            },
-            {
-              'id': 2,
-              'username': 'sam',
-              'email': 'sam@asd.com'
-            },
-            {
-              'id': 3,
-              'username': 'dave',
-              'email': 'dave@asd.com'
-            },
-            {
-              'id': 4,
-              'username': 'tom',
-              'email': 'tom@asd.com'
-            },
-            {
-              'id': 5,
-              'username': 'daria',
-              'email': 'daria@asd.com'
-            },
-            {
-              'id': 6,
-              'username': 'Ian',
-              'email': 'ian@asd.com'
-            },
-            {
-              'id': 7,
-              'username': 'stan',
-              'email': 'stan@asd.com'
-            },
-            {
-              'id': 8,
-              'username': 'aria',
-              'email': 'aria@asd.com'
-            }
-          ]
+          'allUsers': []
         }
       }
     )
+  })
+
+  describe('authentication', () => {
+    test('register', async () => {
+      const response = await axios.post('http://localhost:3020/graphql', {
+        query: `
+          mutation {
+            register(username: "testuser", email: "testuser@testuser.com", password: "testtest") {
+              ok
+              errors {
+                path
+                message
+              }
+            }
+          }
+        `
+      })
+  
+      const { data } = response
+  
+      expect(data).toMatchObject({
+        data: {
+          register: {
+            ok: true,
+            errors: null
+          }
+        }
+      })
+    })
+
+    test('login', async () => {
+      const response = await axios.post('http://localhost:3020/graphql', {
+        query: `
+          mutation {
+            login(email: "testuser@testuser.com", password: "testtest") {
+              token
+              refreshToken
+            }
+          }
+        `
+      })
+
+      const { data: { login: { token, refreshToken } } } = response.data
+
+      const response2 = await axios.post(
+        'http://localhost:3020/graphql',
+        {
+          query: `
+            mutation {
+              createTeam(name: "team1") {
+                ok
+                team {
+                  id
+                  name
+                }
+              }
+            }
+          `
+        },
+        {
+          headers: {
+            'x-token': token,
+            'x-refresh-token': refreshToken
+          }
+        },
+      )
+
+      expect(response2.data).toMatchObject({
+        data: {
+          createTeam: {
+            ok: true,
+            team: {
+              name: 'team1'
+            }
+          }
+        }
+      })
+    })
   })
 })
