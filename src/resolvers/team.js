@@ -19,12 +19,12 @@ export const team = {
     createTeam: requiresAuth.createResolver(async (parent, args, { models, user }) => {
       try {
         const createdTeam = await models.sequelize.transaction(
-          async () => {
-            const teamToCreate = await models.Team.create({ ...args })
+          async (transation) => {
+            const teamToCreate = await models.Team.create({ ...args }, { transation })
 
-            await models.Member.create({ teamId: teamToCreate.id, userId: user.id, admin: true })
+            await models.Member.create({ teamId: teamToCreate.id, userId: user.id, admin: true }, { transation })
 
-            await models.Channel.create({ name: 'general', public: true, teamId: teamToCreate.id })
+            await models.Channel.create({ name: 'general', public: true, teamId: teamToCreate.id }, { transation })
 
             return teamToCreate
           }
