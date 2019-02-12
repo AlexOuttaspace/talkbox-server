@@ -5,6 +5,8 @@ export const message = `
     user: User!
     channel: Channel!
     created_at: String!
+    url: String
+    filetype: String
   }
 
   type Subscription {
@@ -16,6 +18,6 @@ export const message = `
   }
 
   type Mutation {
-    createMessage(channelId: Int!, text: String!): Boolean!
+    createMessage(channelId: Int!, text: String, file: Upload): Boolean!
   }
 `

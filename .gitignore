@@ -3,3 +3,7 @@
 .env
 # Dependencies
 node_modules/
+
+# files upload
+files/*
+!files/.gitkeep 

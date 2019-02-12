@@ -1,15 +1,54 @@
 import { requiresAuth, requiresTeamAccess } from '../permissions'
 import { withFilter } from 'apollo-server-express'
-
+import fs from 'fs'
 import { pubsub } from '../pubsub'
 
 const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE'
 
+const FILES_FOLDER = 'files'
+
+const storeFS = ({ stream, filename }) => {
+  const filePath = `${FILES_FOLDER}/${filename}`
+
+  return new Promise((resolve, reject) =>
+    stream
+      .on('error', (error) => {
+        if (stream.truncated)
+          // Delete the truncated file.
+          fs.unlinkSync(filePath)
+        reject(error)
+      })
+      .pipe(fs.createWriteStream(filePath))
+      .on('error', (error) => reject(error))
+      .on('finish', () => resolve({ filePath }))
+  )
+}
+
+const processUpload = async (upload) => {
+  const { createReadStream, filename, mimetype } = await upload
+
+  const stream = createReadStream()
+  const { filePath } = await storeFS({ stream, filename })
+
+  // defining file extension like this is pretty bad, so I might change it later
+  return { filePath, filetype: mimetype }
+}
+
 export const message = {
   Mutation: {
-    createMessage: requiresAuth.createResolver(async (parent, args, { models, user }) => {
+    createMessage: requiresAuth.createResolver(async (parent, { file, ...args }, { models, user }) => {
       try {
-        const createdMessage = await models.Message.create({ ...args, userId: user.id })
+        const messageData = args
+
+        if (file) {
+          const { filePath, filetype } = await processUpload(file[0])
+
+          console.log(filePath)
+          messageData.url = filePath
+          messageData.filetype = filetype
+        }
+
+        const createdMessage = await models.Message.create({ ...messageData, userId: user.id })
         
         pubsub.publish(NEW_CHANNEL_MESSAGE, {
           channelId: args.channelId,
