@@ -1,7 +1,7 @@
 export const message = `
   type Message {
     id: Int!
-    text: String!
+    text: String
     user: User!
     channel: Channel!
     created_at: String!

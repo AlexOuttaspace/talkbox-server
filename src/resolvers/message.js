@@ -30,7 +30,7 @@ const processUpload = async (upload) => {
   const stream = createReadStream()
   const { filePath } = await storeFS({ stream, filename })
 
-  // defining file extension like this is pretty bad, so I might change it later
+  // defining file type like this is pretty bad, so I might change it later
   return { filePath, filetype: mimetype }
 }
 
@@ -41,15 +41,20 @@ export const message = {
         const messageData = args
 
         if (file) {
-          const { filePath, filetype } = await processUpload(file[0])
+          try {
+            const { filePath, filetype } = await processUpload(file[0])
 
-          console.log(filePath)
-          messageData.url = filePath
-          messageData.filetype = filetype
+            console.log(filePath)
+            messageData.url = filePath
+            messageData.filetype = filetype
+          } catch (error) {
+            console.log(error)
+            return false
+          }
         }
 
         const createdMessage = await models.Message.create({ ...messageData, userId: user.id })
-        
+
         pubsub.publish(NEW_CHANNEL_MESSAGE, {
           channelId: args.channelId,
           newChannelMessage: {

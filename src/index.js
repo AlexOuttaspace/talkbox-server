@@ -18,6 +18,11 @@ app.use(extractUser)
 
 const PORT = process.env.PORT || 3020
 
+models.Message.findAll(
+  { order: [ [ 'created_at', 'ASC' ] ], where: { channelId: 2 } },
+  { raw: true },
+).then((a) => a.map((b) => console.log(b.dataValues)))
+
 const server = new ApolloServer({
   typeDefs: gql(schema),
   resolvers,
