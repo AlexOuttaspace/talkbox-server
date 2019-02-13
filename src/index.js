@@ -16,6 +16,8 @@ app.use(cors('*'))
 
 app.use(extractUser)
 
+app.use('/files', express.static('files'))
+
 const PORT = process.env.PORT || 3020
 
 models.Message.findAll(
