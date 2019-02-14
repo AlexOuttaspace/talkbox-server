@@ -78,6 +78,9 @@ export const message = {
       ))
   },
   Message: {
+    url: (parent) => {
+      return parent.url ? `http://localhost:3020/${parent.url}` : parent.url
+    },
     user: ({ userId }, args, { models }) => {
       return models.User.findOne({ where: { id: userId } }, { raw: true })
     }
