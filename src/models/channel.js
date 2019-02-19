@@ -1,9 +1,9 @@
 export default (sequelize, DataTypes) => {
   const Channel = sequelize.define('channel', {
     name: DataTypes.STRING,
-    public: {
+    private: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true
+      defaultValue: false
     }
   })
 
@@ -16,6 +16,13 @@ export default (sequelize, DataTypes) => {
     })
     Channel.belongsToMany(models.User, {
       through: 'channel_member',
+      foreignKey: {
+        name: 'channelId',
+        field: 'channel_id'
+      }
+    })
+    Channel.belongsToMany(models.User, {
+      through: models.PrivateMember,
       foreignKey: {
         name: 'channelId',
         field: 'channel_id'

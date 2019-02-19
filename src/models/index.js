@@ -15,7 +15,8 @@ export const models = {
   Message: sequelize.import('./message'),
   Team: sequelize.import('./team'),
   Member: sequelize.import('./member'),
-  DirectMessage: sequelize.import('./direct-message')
+  DirectMessage: sequelize.import('./direct-message'),
+  PrivateMember: sequelize.import('./private-member')
 }
 
 Object.keys(models).forEach((modelName) => {

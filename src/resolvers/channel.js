@@ -19,7 +19,22 @@ export const channel = {
           }
         }
 
-        const createdChannel = await models.Channel.create(args)
+        const createdChannel = await models.sequelize.transaction(async (transaction) => {
+          const newChannel = await models.Channel.create(args, { transaction })
+          const membersToCreate = args.members
+            .filter((memberId) => memberId !== user.id)
+            .map((memberId) => ({ userId: memberId, channelId: newChannel.dataValues.id }))
+
+          if (args.private) {
+            await models.PrivateMember.bulkCreate([
+              ...membersToCreate,
+              { userId: user.id, channelId: newChannel.dataValues.id }
+            ], { transaction })
+          }
+
+          return newChannel
+        })
+        
 
         return {
           ok: true,
