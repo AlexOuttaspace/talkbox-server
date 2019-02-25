@@ -2,7 +2,8 @@ import { requiresAuth, requiresTeamAccess } from '../permissions'
 import { withFilter } from 'apollo-server-express'
 import fs from 'fs'
 import { pubsub } from '../pubsub'
-
+import dayjs from 'dayjs'
+import moment from 'moment'
 const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE'
 
 const FILES_FOLDER = 'files'
@@ -44,7 +45,6 @@ export const message = {
           try {
             const { filePath, filetype } = await processUpload(file[0])
 
-            console.log(filePath)
             messageData.url = filePath
             messageData.filetype = filetype
           } catch (error) {
@@ -71,7 +71,7 @@ export const message = {
     })
   },
   Query: {
-    messages: requiresAuth.createResolver(async (parent, { channelId }, { models, user }) => {
+    messages: requiresAuth.createResolver(async (parent, { cursor, channelId }, { models, user }) => {
       const channel = models.Channel.findOne({ where: { id: channelId }, raw: true })
 
       if (channel.private) {
@@ -82,8 +82,23 @@ export const message = {
         }
       }
 
+      const options = {
+        order: [ [ 'created_at', 'DESC' ] ],
+        where: { channelId },
+        limit: 20
+      }
+
+
+      if (cursor) {
+        options.where.created_at = {
+          [models.Sequelize.Op.lt]: dayjs(+cursor).toISOString()
+        }
+      }
+
+      console.log(options)
+
       return models.Message.findAll(
-        { order: [ [ 'created_at', 'ASC' ] ], where: { channelId } },
+        options,
         { raw: true },
       )
     })
