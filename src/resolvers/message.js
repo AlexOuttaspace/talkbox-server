@@ -95,8 +95,6 @@ export const message = {
         }
       }
 
-      console.log(options)
-
       return models.Message.findAll(
         options,
         { raw: true },
@@ -104,8 +102,9 @@ export const message = {
     })
   },
   Message: {
-    url: (parent) => {
-      return parent.url ? `http://localhost:3020/${parent.url}` : parent.url
+    url: (parent, _, { serverUrl }) => {
+      console.log({ serverUrl })
+      return parent.url ? `${serverUrl}/${parent.url}` : parent.url
     },
     user: ({ userId }, args, { models }) => {
       return models.User.findOne({ where: { id: userId } }, { raw: true })

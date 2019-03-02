@@ -37,7 +37,8 @@ const server = new ApolloServer({
       SECRET,
       SECRET2,
       models,
-      user: req.user
+      user: req.user,
+      serverUrl: `${req.protocol}://${req.get('host')}`
     })
   },
   subscriptions: {
