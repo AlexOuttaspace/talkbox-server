@@ -4,6 +4,8 @@
 # Dependencies
 node_modules/
 
+# build
+dist/
 # files upload
 files/*
 !files/.gitkeep 
