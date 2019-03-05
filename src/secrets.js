@@ -1,2 +1,3 @@
-export const SECRET = 'nevergonnagiveyouup'
-export const SECRET2 = 'nevergonnaletyoudown'
+export const SECRET = process.env.SECRET
+export const SECRET2 = process.env.SECRET2
+

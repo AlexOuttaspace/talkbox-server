@@ -6,9 +6,9 @@
   "scripts": {
     "commit": "npx git-cz",
     "precommit": "lint-staged",
-    "dev": "nodemon --exec babel-node ./src/index.js",
+    "dev": "nodemon --exec babel-node -r node_modules/dotenv/config ./src/index.js",
     "build": "babel ./src -d dist",
-    "serve": "node ./dist/index.js",
+    "serve": "node -r dotenv/config ./dist/index.js",
     "start": "npm run build && npm run serve",
     "test": "TEST_ENV=1 TEST_DB=test_talkbox jest --detectOpenHandles",
     "test-server": "TEST_DB=test_talkbox nodemon --exec babel-node ./src/index.js"
@@ -29,6 +29,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dayjs": "^1.8.7",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
     "graphql": "^14.0.2",

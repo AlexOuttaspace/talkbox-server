@@ -9,3 +9,5 @@ dist/
 # files upload
 files/*
 !files/.gitkeep 
+
+dump.rdb

@@ -3,7 +3,7 @@ import { withFilter } from 'apollo-server-express'
 import fs from 'fs'
 import { pubsub } from '../pubsub'
 import dayjs from 'dayjs'
-import moment from 'moment'
+
 const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE'
 
 const FILES_FOLDER = 'files'
@@ -103,7 +103,6 @@ export const message = {
   },
   Message: {
     url: (parent, _, { serverUrl }) => {
-      console.log({ serverUrl })
       return parent.url ? `${serverUrl}/${parent.url}` : parent.url
     },
     user: ({ userId }, args, { models }) => {
