@@ -10,8 +10,6 @@ import { SECRET, SECRET2 } from './secrets'
 import { extractUser } from './extractUser'
 import { refreshTokens } from './auth'
 
-console.log({ SECRET, SECRET2 })
-
 const app = express()
 
 app.use(cors('*'))
