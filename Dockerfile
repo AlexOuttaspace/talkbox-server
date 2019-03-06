@@ -10,10 +10,12 @@ RUN apk add --no-cache --virtual .gyp \
         make \
         g++ \
     && npm install \
-    && apk del .gyp
+    && apk del .gyp \
+    && apk add --no-cache bash
 
 COPY . ./
+COPY ./wait-for-it.sh .
 
-ENV PORT=80
-EXPOSE 80
+ENV PORT=3020
+EXPOSE 3020
 CMD ["npm", "start"]

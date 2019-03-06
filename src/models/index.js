@@ -1,13 +1,30 @@
 import Sequelize from 'sequelize'
 
-const sequelize = new Sequelize(process.env.TEST_DB || 'talkbox_2', 'postgres', '', {
-  dialect: 'postgres',
-  operatorsAliases: Sequelize.Op,
-  define: {
-    underscored: true
-  },
-  logging: process.env.TEST_ENV !== '1'
+const {
+  TEST_DB,
+  POSTGRES_PASSWORD,
+  POSTGRES_USER,
+  POSTGRES_DB
+} = process.env
+
+console.log({
+  TEST_DB,
+  POSTGRES_PASSWORD,
+  POSTGRES_USER,
+  POSTGRES_DB
 })
+
+const sequelize = new Sequelize(
+  TEST_DB || POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, {
+    dialect: 'postgres',
+    operatorsAliases: Sequelize.Op,
+    host: process.env.DB_HOST,
+    define: {
+      underscored: true
+    },
+    logging: process.env.TEST_ENV !== '1'
+  }
+)
 
 export const models = {
   User: sequelize.import('./user'),
