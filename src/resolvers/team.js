@@ -24,7 +24,7 @@ export const team = {
 
             await models.Member.create({ teamId: teamToCreate.id, userId: user.id, admin: true }, { transation })
 
-            await models.Channel.create({ name: 'general', public: true, teamId: teamToCreate.id }, { transation })
+            await models.Channel.create({ name: 'general', private: false, teamId: teamToCreate.id }, { transation })
 
             return teamToCreate
           }
@@ -80,8 +80,10 @@ export const team = {
     })
   },
   Team: {
-    channels: ({ id }, args, { models, user }) =>
-      models.sequelize.query(`
+    channels: async ({ id }, args, { models, user }) => {
+
+
+      const foundChannels = await models.sequelize.query(`
         select distinct on (id)
         * from channels as c, private_members as pm
         where team_id = :teamId and (c.private = false or (pm.user_id = :userId and c.id = pm.channel_id));`, {
@@ -89,7 +91,10 @@ export const team = {
         replacements: { teamId: id, userId: user.id },
         models: models.Channel,
         raw: true
-      }),
+      })
+
+      return foundChannels
+    },
       
     
     directMessageMembers: ({ id }, args, { models, user }) =>

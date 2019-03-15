@@ -18,7 +18,7 @@ app.use(extractUser)
 
 app.use('/files', express.static('files'))
 
-const PORT = process.env.PORT || 3020
+const PORT = process.env.API_PORT || 3020
 
 models.Message.findAll(
   { order: [ [ 'created_at', 'ASC' ] ], where: { channelId: 2 } },

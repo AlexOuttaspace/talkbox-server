@@ -9,7 +9,7 @@ services:
     networks:
       - webnet
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ''
       POSTGRES_USER: postgres
       POSTGRES_DB: talkbox
   web:
